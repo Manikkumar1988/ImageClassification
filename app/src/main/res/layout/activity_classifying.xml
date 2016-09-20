@@ -7,9 +7,23 @@
 <ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/input_edit_text"></ListView>
+    android:layout_above="@+id/footer"></ListView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/footer"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/input_edit_text"/>
+        android:id="@+id/input_edit_text"
+        android:lines="1"
+        android:ellipsize="none"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/send_button"
+        android:id="@+id/send_button"/>
+    </RelativeLayout>
 </RelativeLayout>

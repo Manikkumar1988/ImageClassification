@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Classify Img</string>
+    <string name="list_all_images">list all images</string>
 </resources>
