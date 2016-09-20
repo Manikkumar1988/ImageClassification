@@ -30,7 +30,8 @@ public class MainActivityEspressoTest {
     @Before
     public void initValidString() {
         // Specify a valid string.
-        mStringToBetyped = "LiSt 6 unTagged images";
+        //mStringToBetyped = "LiSt 6 unTagged images";
+        mStringToBetyped = "select 1st and 3rd images";
     }
 
     @Test
@@ -43,5 +44,6 @@ public class MainActivityEspressoTest {
         // Check that the text was changed.
         onView(withId(R.id.input_edit_text))
                 .check(matches(withText(mStringToBetyped)));
+
     }
 }
