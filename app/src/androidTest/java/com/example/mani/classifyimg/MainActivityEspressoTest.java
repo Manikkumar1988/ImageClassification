@@ -12,6 +12,7 @@ import android.view.View;
 import com.example.mani.classifyimg.adapter.ImagesAdapter;
 
 import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.nullValue;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,31 +35,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityEspressoTest {
 
-    private String mStringToBetyped;
 
     @Rule
     public ActivityTestRule<ClassifyingActivity> mActivityRule = new ActivityTestRule<>(
             ClassifyingActivity.class);
-
-    @Before
-    public void initValidString() {
-        //mStringToBetyped = "list 7 untagged images";
-        //mStringToBetyped = "select 1st and images";
-        mStringToBetyped = "select 1st, 2nd and 3rd images";
-    }
-
-    @Test
-    public void changeText() {
-        // Type text and then press the button.
-        onView(withId(R.id.input_edit_text))
-                .perform(typeText(mStringToBetyped), closeSoftKeyboard());
-        onView(withId(R.id.send_button)).perform(click());
-
-        // Check that the text was changed.
-        onView(withId(R.id.input_edit_text))
-                .check(matches(withText(mStringToBetyped)));
-
-    }
 
 
     @Test
@@ -85,19 +65,25 @@ public class MainActivityEspressoTest {
     public void selectXImages()
     {
         type("List 4 untagged images");
-        type("select 1st 2nd 3rd images");
-
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(2, click()));
 
+        type("select 1st, 2nd and 3rd images");
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
     }
 
+    @Test
+    public void selectXImages_noprecondition()
+    {
+        type("select 3rd images");
+        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewDataBoundAssertion());
+    }
+
+    @Test
+    public void classifyXImages_noprecondition()
+    {
+        type("classify images as nature");
+        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewDataBoundAssertion());
+    }
 
     private void type(String input) {
         onView(withId(R.id.input_edit_text))
@@ -112,13 +98,6 @@ public class MainActivityEspressoTest {
         type("List 4 untagged images");
         type("select 1st, 2nd and 3rd images");
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(2, click()));
 
 
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
@@ -165,6 +144,20 @@ public class MainActivityEspressoTest {
             RecyclerView recyclerView = (RecyclerView) view;
             ImagesAdapter adapter = (ImagesAdapter) recyclerView.getAdapter();
             assertThat(adapter.getSelectedItemCount(), Matchers.is(expectedCount));
+        }
+    }
+
+    public class RecyclerViewDataBoundAssertion implements ViewAssertion {
+
+        @Override
+        public void check(View view, NoMatchingViewException noViewFoundException) {
+            if (noViewFoundException != null) {
+                throw noViewFoundException;
+            }
+
+            RecyclerView recyclerView = (RecyclerView) view;
+            ImagesAdapter adapter = (ImagesAdapter) recyclerView.getAdapter();
+            assertThat(adapter,Matchers.is(nullValue()));
         }
     }
 }

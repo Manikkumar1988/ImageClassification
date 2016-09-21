@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,8 +16,6 @@ import com.example.mani.classifyimg.model.ImageItem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ClassifyingActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,6 +36,24 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
         inputField = (EditText) findViewById(R.id.input_edit_text);
 
         findViewById(R.id.send_button).setOnClickListener(this);
+
+        inputField.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_ENTER ){
+                    processInputText();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void processInputText() {
+        String inputText = String.valueOf(inputField.getText());
+        resetInputField(inputText);
+        validateAndExecuteCommand(inputText);
     }
 
     private void getData() {
@@ -46,23 +63,22 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
 
-        String inputText = String.valueOf(inputField.getText());
 
         switch (view.getId()) {
             case R.id.send_button: {
-                resetInputField(inputText);
-                validateString(inputText);
+                processInputText();
                 break;
             }
         }
     }
+
 
     private void resetInputField(String inputText) {
         inputField.setText("");
         inputField.setHint(inputText);
     }
 
-    private void validateString(String validationString) {
+    private void validateAndExecuteCommand(String validationString) {
         ChatCommand chatCommand = new ChatCommand();
         if (validationString.equalsIgnoreCase(getString(R.string.list_all_images))) {
             loadAllImages();
@@ -75,24 +91,33 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
         }else if (validationString.matches(chatCommand.classifyStringPattern)){
             classifyXImages(chatCommand.getTagKeywords(validationString));
         } else {
-            Toast.makeText(getApplicationContext(), "Please enter correct command",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.enter_command),Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void classifyXImages(List<String> tagKeywords) {
+        if(adapter!=null) {
         if(adapter.getSelectedItems().size()>0) {
             for(int itemIndex:adapter.getSelectedItems()) {
                  imagesHashMap.get(imageItems.get(itemIndex).getmImageName()).addTags(tagKeywords);
             }
             adapter.removeSelectedData();
         }
+        } else {
+            Toast.makeText(getApplicationContext(),getString(R.string.list_images),Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void selectXImages(ArrayList<Integer> numbers) {
-        if (adapter.getItemCount()>=2 && numbers.size() > 0 && numbers.get(0)>1) {
-            for(int number:numbers)
-                adapter.toggleSelection(number);
+        if(adapter!=null) {
+            if (adapter.getItemCount() > 1 && numbers.size() > 0) {
+                for (int number : numbers) {
+                    adapter.toggleSelection(number);
+                }
+            }
+        } else {
+            Toast.makeText(getApplicationContext(),getString(R.string.list_images),Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -113,12 +138,14 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
             }
             adapter = new ImagesAdapter(imageItems);
             mRecyclerView.setAdapter(adapter);
+        } else {
+            Toast.makeText(getApplicationContext(),getString(R.string.list_images),Toast.LENGTH_SHORT).show();
         }
     }
 
     private void loadAllImages() {
+        imageItems.clear();
         imageItems = new ArrayList<ImageItem>(imagesHashMap.values());
-
         adapter = new ImagesAdapter(imageItems);
         mRecyclerView.setAdapter(adapter);
     }
