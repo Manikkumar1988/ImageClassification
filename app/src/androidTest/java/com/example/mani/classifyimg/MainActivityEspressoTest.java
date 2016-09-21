@@ -75,25 +75,25 @@ public class MainActivityEspressoTest {
     @Test
     public void loadXImages()
     {
-        type("List 15 untagged images");
+        type("List 4 untagged images");
 
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
-        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewItemCountAssertion(15));
+        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewItemCountAssertion(4));
     }
 
     @Test
     public void selectXImages()
     {
-        type("List 15 untagged images");
+        type("List 4 untagged images");
         type("select 1st 2nd 3rd images");
 
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
         onView(withId(R.id.recycler_view)).perform(
+                RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(withId(R.id.recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(1, click()));
         onView(withId(R.id.recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(2, click()));
-        onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(3, click()));
 
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
     }
@@ -109,7 +109,7 @@ public class MainActivityEspressoTest {
     public void classifyXImages()
     {
 
-        type("List 13 untagged images");
+        type("List 4 untagged images");
         type("select 1st, 2nd and 3rd images");
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
 
@@ -123,9 +123,9 @@ public class MainActivityEspressoTest {
 
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
 
-        type("classify as nature");
+        type("classify images as nature");
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(0));
-        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewItemCountAssertion(10));
+        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewItemCountAssertion(1));
 
 
     }

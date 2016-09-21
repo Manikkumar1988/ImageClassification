@@ -13,6 +13,7 @@ import com.example.mani.classifyimg.model.ChatCommand;
 import com.example.mani.classifyimg.model.ImageItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,7 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classifying);
         initializeViews();
+        getData();
     }
 
     private void initializeViews() {
@@ -35,6 +37,10 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
         inputField = (EditText) findViewById(R.id.input_edit_text);
 
         findViewById(R.id.send_button).setOnClickListener(this);
+    }
+
+    private void getData() {
+        imagesHashMap = ImageItem.createImageList();
     }
 
     @Override
@@ -61,25 +67,30 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
         if (validationString.equalsIgnoreCase(getString(R.string.list_all_images))) {
             loadAllImages();
         } else if (validationString.matches(chatCommand.list_x_untagged_images_pattern)) {
-            ArrayList<Integer> numbers = getNumbersInTheString(validationString);
+            ArrayList<Integer> numbers = chatCommand.getNumbersInTheString(validationString);
             loadXUntaggedImages(numbers);
         } else if (validationString.matches(chatCommand.selection_pattern)){
-            ArrayList<Integer> numbers = getNumbersInTheString(validationString);
+            ArrayList<Integer> numbers = chatCommand.getNumbersInTheString(validationString);
             selectXImages(numbers);
         }else if (validationString.matches(chatCommand.classifyStringPattern)){
-            classifyXImages();
+            classifyXImages(chatCommand.getTagKeywords(validationString));
         } else {
             Toast.makeText(getApplicationContext(), "Please enter correct command",Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void classifyXImages() {
-        adapter.removeSelectedData();
+    private void classifyXImages(List<String> tagKeywords) {
+        if(adapter.getSelectedItems().size()>0) {
+            for(int itemIndex:adapter.getSelectedItems()) {
+                 imagesHashMap.get(imageItems.get(itemIndex).getmImageName()).addTags(tagKeywords);
+            }
+            adapter.removeSelectedData();
+        }
     }
 
     private void selectXImages(ArrayList<Integer> numbers) {
-        if (numbers.size() > 0 && numbers.get(0)>1) {
+        if (adapter.getItemCount()>=2 && numbers.size() > 0 && numbers.get(0)>1) {
             for(int number:numbers)
                 adapter.toggleSelection(number);
         }
@@ -87,34 +98,38 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
 
     private void loadXUntaggedImages(ArrayList<Integer> count) {
         if (count.size() > 0 && count.get(0)>1) {
-            imageItems = ImageItem.createImageList(count.get(0));
+            imageItems.clear();
+            int noOfItems = 0;
+            for(ImageItem imageItem:imagesHashMap.values())
+            {
+                if(!imageItem.hasTag()) {
+                    noOfItems +=1;
+                    ImageItem untaggedItem = new ImageItem();
+                    untaggedItem.setmImageName(imageItem.getmImageName());
+                    imageItems.add(untaggedItem);
+                }
+                if(noOfItems==count.get(0))
+                    break;
+            }
             adapter = new ImagesAdapter(imageItems);
             mRecyclerView.setAdapter(adapter);
         }
     }
 
     private void loadAllImages() {
-        imageItems = ImageItem.createImageList(20);
-        ImagesAdapter adapter = new ImagesAdapter(imageItems);
+        imageItems = new ArrayList<ImageItem>(imagesHashMap.values());
+
+        adapter = new ImagesAdapter(imageItems);
         mRecyclerView.setAdapter(adapter);
     }
 
-    private ArrayList<Integer> getNumbersInTheString(String input) {
-        ArrayList<Integer> numbers = new ArrayList<>();
-        Matcher m = numberPattern.matcher(input);
-        while (m.find()) {
-            numbers.add(Integer.valueOf(m.group()));
-        }
-        return numbers;
-    }
+
 
     private static final int COLUMN_COUNT = 2;
-    private ArrayList<ImageItem> imageItems;
+    private ArrayList<ImageItem> imageItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private ImagesAdapter adapter;
     private EditText inputField;
-
-    Pattern numberPattern = Pattern.compile("-?" +
-            "\\d+"); //matches the digits
+    public HashMap<Integer,ImageItem> imagesHashMap;
 
 }

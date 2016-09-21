@@ -1,6 +1,12 @@
 package com.example.mani.classifyimg.model;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ChatCommand {
 
     //List “x” untagged images
@@ -34,6 +40,23 @@ public class ChatCommand {
     //List “x” untagged images
     //Select x …. y and z images
     //List all images
-
     //Classify images as <tag> …. <tag> and <tag>
+
+    Pattern numberPattern = Pattern.compile("-?" +
+            "\\d+"); //matches the digits
+
+    public ArrayList<Integer> getNumbersInTheString(String input) {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        Matcher m = numberPattern.matcher(input);
+        while (m.find()) {
+            numbers.add(Integer.valueOf(m.group()));
+        }
+        return numbers;
+    }
+
+    public List<String> getTagKeywords(String input) {
+        String fixedInput = input.toLowerCase().replaceAll("(classify |images |as |and )", "");
+        return Arrays.asList(fixedInput.split(" "));
+    }
+
 }

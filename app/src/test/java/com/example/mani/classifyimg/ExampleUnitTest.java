@@ -1,8 +1,13 @@
 package com.example.mani.classifyimg;
 
+import android.util.Log;
+
 import com.example.mani.classifyimg.model.ChatCommand;
 
 import org.junit.Test;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -39,6 +44,17 @@ public class ExampleUnitTest {
         assertEquals("classify iMages as sky, fire and water".matches(chatCommand.classifyStringPattern),true);
         assertEquals("Classify images as sky fire & water".matches(chatCommand.classifyStringPattern),false);
         assertEquals("Classify images as sky ,fire & water".matches(chatCommand.classifyStringPattern),false);
+    }
+
+    @Test
+    public void extractString_iscorrect() throws Exception{
+        String input = "hello I'm a java dev" +
+                "no job experience needed" +
+                "senior software engineer" +
+                "java job available for senior software engineer";
+
+        String fixedInput = input.replaceAll("(java |job |senior )", "");
+        System.out.print(fixedInput);
     }
 
 }
