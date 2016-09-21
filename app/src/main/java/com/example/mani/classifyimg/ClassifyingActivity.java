@@ -6,7 +6,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mani.classifyimg.adapter.ImagesAdapter;
@@ -37,16 +39,17 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
 
         findViewById(R.id.send_button).setOnClickListener(this);
 
-        inputField.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == KeyEvent.KEYCODE_ENTER ){
+        inputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId,
+                                          KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
                     processInputText();
                     return true;
                 }
                 return false;
             }
         });
+
 
     }
 

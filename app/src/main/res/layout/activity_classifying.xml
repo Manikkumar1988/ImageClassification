@@ -19,7 +19,7 @@
         android:layout_height="50dp"
         android:id="@+id/input_edit_text"
         android:lines="1"
-        android:imeOptions="actionSend"
+        android:imeOptions="actionGo"
         android:ellipsize="none"/>
     <ImageView
         android:layout_width="wrap_content"
