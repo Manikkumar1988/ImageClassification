@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.mani.classifyimg.adapter.ImagesAdapter;
+import com.example.mani.classifyimg.model.ChatCommand;
 import com.example.mani.classifyimg.model.ImageItem;
 
 import java.util.ArrayList;
@@ -56,15 +57,16 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void validateString(String validationString) {
+        ChatCommand chatCommand = new ChatCommand();
         if (validationString.equalsIgnoreCase(getString(R.string.list_all_images))) {
             loadAllImages();
-        } else if (validationString.contains("untagged")) {
+        } else if (validationString.matches(chatCommand.list_x_untagged_images_pattern)) {
             ArrayList<Integer> numbers = getNumbersInTheString(validationString);
             loadXUntaggedImages(numbers);
-        } else if (validationString.contains("select")){
+        } else if (validationString.matches(chatCommand.selection_pattern)){
             ArrayList<Integer> numbers = getNumbersInTheString(validationString);
             selectXImages(numbers);
-        }else if (validationString.contains("classify")){
+        }else if (validationString.matches(chatCommand.classifyStringPattern)){
             classifyXImages();
         } else {
             Toast.makeText(getApplicationContext(), "Please enter correct command",Toast.LENGTH_SHORT).show();
@@ -111,24 +113,6 @@ public class ClassifyingActivity extends AppCompatActivity implements View.OnCli
     private RecyclerView mRecyclerView;
     private ImagesAdapter adapter;
     private EditText inputField;
-
-    //List “x” untagged images
-    String list_x_untagged_images_pattern = "(?i)" + // Ignores case sensitivity
-            "^" + // Must match at the beginning
-            "\\blist \\b" + // Matches a word boundary
-            "\\d " + // Any digit
-            "\\b untagged images\\b" +
-            "$"; //must match at the end
-
-    //Select x …. y and z images
-    String selection_pattern = "(?i)" + // Ignores case sensitivity
-            "^" + // Must match at the beginning
-            "\\bselect \\b" + // Matches a word boundary
-            "(((\\d)(rd|st|nd|th))+) \\b" +
-            //"\\band \\b" +
-            //"((\\d)(rd|st|nd|th)) \\b " +
-            "\\bimages\\b" +
-            "$"; //must match at the end
 
     Pattern numberPattern = Pattern.compile("-?" +
             "\\d+"); //matches the digits

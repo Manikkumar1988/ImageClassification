@@ -1,5 +1,7 @@
 package com.example.mani.classifyimg;
 
+import com.example.mani.classifyimg.model.ChatCommand;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,7 +11,34 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void listXUntaggedImage_iscorrect() throws Exception {
+        ChatCommand chatCommand = new ChatCommand();
+        assertEquals("LiSt 25 uNTagged images".matches(chatCommand.list_x_untagged_images_pattern),true);
+        assertEquals("LiSt 25 untagged images".matches(chatCommand.list_x_untagged_images_pattern),true);
+        assertEquals("LiSt 125 untagged images".matches(chatCommand.list_x_untagged_images_pattern),true);
+        assertEquals("LiSt 125 untagged".matches(chatCommand.list_x_untagged_images_pattern),false);
+        assertEquals("LiSt 125.445 untagged".matches(chatCommand.list_x_untagged_images_pattern),false);
     }
+
+    @Test
+    public void selectXImages_iscorrect() throws Exception {
+        ChatCommand chatCommand = new ChatCommand();
+        assertEquals("Select 1st and 3rd images".matches(chatCommand.selection_pattern),true);
+        assertEquals("Select 2nd And 44th images".matches(chatCommand.selection_pattern),true);
+        assertEquals("sElect 4th & images".matches(chatCommand.selection_pattern),false);
+        assertEquals("Select 1st, 2nd 5th and 44th images".matches(chatCommand.selection_pattern),false);
+        assertEquals("Select 1st, 2nd, 5th and 44th images".matches(chatCommand.selection_pattern),true);
+        assertEquals("Select 1st images".matches(chatCommand.selection_pattern),true);
+    }
+
+    @Test
+    public void classify_iscorrect() throws Exception {
+        ChatCommand chatCommand = new ChatCommand();
+        assertEquals("clAssify images as sky".matches(chatCommand.classifyStringPattern),true);
+        assertEquals("classify images as sky and water".matches(chatCommand.classifyStringPattern),true);
+        assertEquals("classify iMages as sky, fire and water".matches(chatCommand.classifyStringPattern),true);
+        assertEquals("Classify images as sky fire & water".matches(chatCommand.classifyStringPattern),false);
+        assertEquals("Classify images as sky ,fire & water".matches(chatCommand.classifyStringPattern),false);
+    }
+
 }

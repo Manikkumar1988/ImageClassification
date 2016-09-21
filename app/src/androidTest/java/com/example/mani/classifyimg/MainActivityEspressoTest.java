@@ -42,9 +42,9 @@ public class MainActivityEspressoTest {
 
     @Before
     public void initValidString() {
-        mStringToBetyped = "list 7 untagged images";
+        //mStringToBetyped = "list 7 untagged images";
         //mStringToBetyped = "select 1st and images";
-        mStringToBetyped = "select 1st 2nd 3rd images";
+        mStringToBetyped = "select 1st, 2nd and 3rd images";
     }
 
     @Test
@@ -110,7 +110,7 @@ public class MainActivityEspressoTest {
     {
 
         type("List 13 untagged images");
-        type("select 1st 2nd 3rd images");
+        type("select 1st, 2nd and 3rd images");
         onView(ViewMatchers.withId(R.id.recycler_view)).check(matches(isDisplayed()));
 
         onView(withId(R.id.recycler_view)).perform(
@@ -124,7 +124,7 @@ public class MainActivityEspressoTest {
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
 
         type("classify as nature");
-        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(3));
+        onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewSelectedItemCountAssertion(0));
         onView(ViewMatchers.withId(R.id.recycler_view)).check(new RecyclerViewItemCountAssertion(10));
 
 
