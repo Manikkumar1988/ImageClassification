@@ -21,26 +21,22 @@ public class ChatCommand {
     public  String selection_pattern = "(?i)" + // Ignores case sensitivity
             "^" + // Must match at the beginning
             "\\bselect\\b " + // Matches a word boundary
-            "([\\d]+(rd|st|nd|th)(,)+ )*" +
+            "([\\d]+(rd|st|nd|th)(,)+ )*" + //Pattern for ordinal number suffixed by comma
             "([\\d]+(rd|st|nd|th) )" +
-            "((\\band\\b) " +
+            "((\\band\\b) " + //and - literal
             "([\\d]+(st|nd|rd|th) ))*" +
-            "\\bimages\\b" +
+            "\\bimages\\b" + //images - literal
             "$"; //must match at the end
 
-
+    //Classify images as <tag> …. <tag> and <tag>
     public String classifyStringPattern = "(?i)" +
             "^" +
-            "\\bclassify images as\\b " +
-            "([a-zA-Z]+(,)+ )*"+
-            "([a-zA-Z]+(\\s)*)"+
-            "((\\band\\b) " +
+            "\\bclassify images as\\b " + //classify images as - literal
+            "([a-zA-Z]+(,)+ )*"+ //tags suffixed with comma
+            "([a-zA-Z]+(\\s)*)"+ //tags
+            "((\\band\\b) " + //and - literal
             "[a-zA-Z]+)*"+
             "$";
-    //List “x” untagged images
-    //Select x …. y and z images
-    //List all images
-    //Classify images as <tag> …. <tag> and <tag>
 
     Pattern numberPattern = Pattern.compile("-?" +
             "\\d+"); //matches the digits
