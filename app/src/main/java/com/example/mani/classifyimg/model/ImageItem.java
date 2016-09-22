@@ -43,7 +43,7 @@ public class ImageItem {
     }
 
     public static HashMap<Integer,ImageItem> createImageList() {
-        HashMap<Integer,ImageItem> imageItemSparseArray = new HashMap<>(); //Choosing Hashmap as master date in favour O(1) retrieval time
+        HashMap<Integer,ImageItem> imageItemSparseArray = new HashMap<>(); //Choosing Hashmap as master data in favour O(1) retrieval time
 
         ImageItem imageItem = new ImageItem();
         imageItem.setmImageName(R.drawable.book);
